@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PCWorkforceCostCenters" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b9a1060-9321-4cfc-819c-73e244c28858">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<parameter name="workforceID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select wf.workrelation_id
+      ,wf.name
+      ,wf.cost_type_id
+      ,wf.cost_center_id
+      ,wf.bu_id
+      ,sc.name   scenario_name
+      ,co.name   company_name
+from sle_planc_workforce wf
+inner join sle_scenario sc on sc.id = wf.scenario_id
+inner join planc_company co on co.id = sc.company_id
+where  wf.scenario_id = $P{scenarioID}
+and   (wf.workrelation_id = $P{workforceID} or $P{workforceID} is null)
+order by wf.bu_id,wf.workrelation_id]]>
+	</queryString>
+	<field name="WORKRELATION_ID" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="COST_TYPE_ID" class="java.lang.String"/>
+	<field name="COST_CENTER_ID" class="java.lang.String"/>
+	<field name="BU_ID" class="java.lang.String"/>
+	<field name="SCENARIO_NAME" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="74" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f29bf8da-f041-4b4d-a0d5-425d0594eb42" x="0" y="3" width="357" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[CENTRO DE COSTOS DE COLABORADORES]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="429f819f-b27e-4caf-b9b8-9ee881814ef8" x="5" y="23" width="352" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f5ffe845-39e1-4e89-a42d-88535f946acb" x="6" y="44" width="351" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SCENARIO_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="515574c4-1f92-4e18-acdc-e873757a9d7d" x="0" y="0" width="572" height="25" forecolor="#CCCCCC" backcolor="#00CDFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="b1f7821f-4046-4dfd-b8a5-32d9aeb5d66f" x="6" y="8" width="72" height="12"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ac52bd64-8377-47b7-972a-17f303bba095" x="330" y="8" width="100" height="12"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af12a5d6-ec06-4431-9e37-61d3ac2c89be" x="465" y="8" width="100" height="12"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CENTRO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4fbe597b-50b9-4804-a473-9c102dc7ae86" x="79" y="8" width="100" height="12"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="96ffab3c-f2c4-4507-bc2a-0767e11f657e" x="437" y="3" width="128" height="10"/>
+				<textElement>
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COST_CENTER_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7da5ecd4-9479-48aa-9f40-4fef2540ebc3" x="330" y="3" width="100" height="10"/>
+				<textElement>
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COST_TYPE_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8b6ee8c3-c5dd-484a-992a-877db03154d8" x="6" y="3" width="72" height="10"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WORKRELATION_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="496daba4-7ef8-4a5d-aedd-b194762875cb" x="79" y="3" width="242" height="10"/>
+				<textElement>
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WorkforceTypeSummary" language="groovy" pageWidth="1300" pageHeight="612" orientation="Landscape" columnWidth="1280" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="20" uuid="85043289-fc56-4120-a95e-152b1c891113">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<parameter name="userID" class="java.lang.String"/>
+	<parameter name="categoryID" class="java.lang.Integer"/>
+	<parameter name="workforceID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+      am.account_id||'-'||ac.name NAME
+     ,wf.name workforce_name
+     ,job.name job_name
+     ,sle_tool.ts_todate(time_slot) date_slot
+     ,am.account_id
+     ,am.amount
+     ,ac.orderval orderval
+     ,co.name name_co
+     ,sc.name name_sc
+     ,sc.currency_id
+     ,cv.code category_value
+from  sle_planc_amount am
+      inner join sle_planc_workforce wf on (wf.scenario_id = am.scenario_id and wf.company_id = am.company_id and wf.workrelation_id = am.workrelation_id)
+      inner join sle_jobs job on (job.company_id = wf.company_id and job.id = wf.job_id)
+      inner join sle_planc_account ac on ac.id = am.account_id
+      inner join sle_scenario sc on am.scenario_id = sc.id
+      inner join planc_company co on sc.company_id = co.id
+      inner join sle_view_cat_drivers cd on am.scenario_id = cd.scenario_id and am.company_id = cd.company_id and am.workrelation_id = cd.workrelation_id
+      inner join sle_category_value cv on cd.category_id = cv.category_id and cd.cat_value_id = cv.id
+where type_id = 0
+and   am.scenario_id = $P{scenarioID}
+and   cd.category_id = $P{categoryID}
+and   (am.workrelation_id = $P{workforceID} or $P{workforceID} is null)
+order by
+     category_value,workforce_name,orderval,account_id]]>
+	</queryString>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="WORKFORCE_NAME" class="java.lang.String"/>
+	<field name="JOB_NAME" class="java.lang.String"/>
+	<field name="DATE_SLOT" class="java.sql.Timestamp"/>
+	<field name="ACCOUNT_ID" class="java.math.BigDecimal"/>
+	<field name="AMOUNT" class="java.math.BigDecimal"/>
+	<field name="ORDERVAL" class="java.math.BigDecimal"/>
+	<field name="NAME_CO" class="java.lang.String"/>
+	<field name="NAME_SC" class="java.lang.String"/>
+	<field name="CURRENCY_ID" class="java.math.BigDecimal"/>
+	<field name="CATEGORY_VALUE" class="java.lang.String"/>
+	<group name="ClassifType" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{CATEGORY_VALUE}+": "+$F{WORKFORCE_NAME}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement uuid="33221b72-5318-4d06-80d2-b10231524450" x="0" y="6" width="526" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{CATEGORY_VALUE}+":  "+$F{WORKFORCE_NAME} +"  ("+$F{JOB_NAME}+")"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="102">
+				<crosstab>
+					<reportElement uuid="198f2b40-e40b-4bae-9c87-236c6d0325d5" x="0" y="0" width="1280" height="102"/>
+					<crosstabDataset>
+						<dataset resetType="Group" resetGroup="ClassifType"/>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<staticText>
+								<reportElement uuid="8c023454-b9dc-429b-9218-bf78cb1b0802" style="Crosstab Data Text" x="0" y="0" width="180" height="15"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PERIODOS]]></text>
+							</staticText>
+							<staticText>
+								<reportElement uuid="8c023454-b9dc-429b-9218-bf78cb1b0802" style="Crosstab Data Text" x="0" y="15" width="180" height="15"/>
+								<textElement textAlignment="Left">
+									<font fontName="Courier New" isBold="true"/>
+								</textElement>
+								<text><![CDATA[CUENTAS]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="NAME" width="180" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{NAME}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#00FFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="9b94a481-b9bd-4148-b918-91ec59614e49" style="Crosstab Data Text" x="0" y="0" width="180" height="25"/>
+									<textElement textAlignment="Left">
+										<font fontName="Courier New" isStrikeThrough="false"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{NAME}.substring($V{NAME}.indexOf("-")+1, $V{NAME}.length())]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="f60b5cf4-6313-459f-a007-3ecf25898d52" x="0" y="0" width="180" height="25"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="Courier New" size="8"/>
+									</textElement>
+									<text><![CDATA[TOTAL]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="DATE_SLOT" height="30" totalPosition="End">
+						<bucket class="java.util.Date">
+							<bucketExpression><![CDATA[$F{DATE_SLOT}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#00FFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField pattern="MMMM-yyyy">
+									<reportElement uuid="58b3ef80-4861-4585-a75b-0d6c8c5027f2" style="Crosstab Data Text" x="0" y="0" width="79" height="30"/>
+									<textElement>
+										<font fontName="Courier New" size="8"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{DATE_SLOT}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="f82a6fa3-3699-4ad3-8866-feec4ff6e7ef" x="0" y="0" width="99" height="30"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Courier New" size="8"/>
+									</textElement>
+									<text><![CDATA[TOTAL]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="AMOUNTMeasure" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{AMOUNT}]]></measureExpression>
+					</measure>
+					<crosstabCell width="79" height="25">
+						<cellContents>
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="41df5b4b-a38a-4d61-87a7-c5f4d0ddaa5a" style="Crosstab Data Text" x="0" y="0" width="79" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="79" height="25" rowTotalGroup="NAME">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="ca20d730-fa87-4a7b-97fb-5a4c3e750f3e" style="Crosstab Data Text" x="0" y="0" width="79" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="99" columnTotalGroup="DATE_SLOT">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="274eff2f-b231-4401-8acb-5a262dc997ee" style="Crosstab Data Text" x="0" y="0" width="99" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="99" rowTotalGroup="NAME" columnTotalGroup="DATE_SLOT">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="3d1656bb-9c16-453e-978e-eeb463441913" style="Crosstab Data Text" x="0" y="0" width="99" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1a85971b-7ee0-4f81-bacc-0f5dfdb84ab3" x="0" y="20" width="358" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_CO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e277c5a5-3fe2-448a-840b-b3fc4f274131" x="0" y="40" width="358" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_SC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="61b8bb87-0192-4478-aca9-16717e3c8cae" x="0" y="0" width="358" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTAS POR CATEGORIA]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement uuid="6c65a2d8-5f09-41b4-87c0-cf47426e568f" x="0" y="80" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2cd92601-6c23-4e07-8bf4-9648c9fb2e98" x="0" y="100" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c61a1d11-c620-4f7d-9bc9-a4e9dc6b9ecc" x="0" y="60" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{userID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+</jasperReport>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WorkforceWithoutAccount" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7eb6a4dc-de08-4bd7-8867-6697f9c9bb84">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="scenarioID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select workrelation_id
+      ,wf.name
+      ,sc.name scenarioName
+      ,co.name companyName
+from sle_planc_workforce wf
+inner join sle_scenario sc  on wf.scenario_id = sc.id
+inner join planc_company co on sc.company_id = co.id
+where scenario_id=$P{scenarioID}
+and   (cost_type_id is null or cost_center_id is null)]]>
+	</queryString>
+	<field name="WORKRELATION_ID" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="SCENARIONAME" class="java.lang.String"/>
+	<field name="COMPANYNAME" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="142" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="200ddc2e-9e8f-4491-820d-39dc5d7c7fb5" x="2" y="121" width="570" height="20" forecolor="#CCCCCC" backcolor="#00CCFF"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="b765c42c-1fb8-4ad2-87ec-73c9f600c75f" x="8" y="123" width="123" height="18"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERO O FICHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e624050a-97ab-48e3-b5d7-fd5ef5e2caa6" x="131" y="123" width="143" height="18"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE COLABORADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="13ec2077-4612-43cf-99bc-a9174a46fc78" x="2" y="2" width="413" height="20"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[COLABORADORES SIN CENTRO DE COSTO ASIGNADO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4eae0bdd-194d-459e-b8f8-d7b955b9881e" x="0" y="22" width="572" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COMPANYNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0bcab199-6223-437f-9fb7-e389fc77edc3" x="0" y="43" width="572" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SCENARIONAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy hh.mm.ss a">
+				<reportElement uuid="c2a5b4a5-93cd-45de-bdb8-6f8ccd1625d4" mode="Opaque" x="0" y="78" width="202" height="20" forecolor="#333333"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8" isBold="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4c846247-69ac-4739-bdd0-58f692f41c87" x="0" y="98" width="115" height="20" forecolor="#333333"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false" pdfFontName="Courier"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="324f8d79-1148-4b8a-83b7-5f2322d6368c" x="8" y="2" width="123" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{WORKRELATION_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bec8aea4-d11c-4d3b-b164-98c64ef4300d" x="132" y="2" width="438" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

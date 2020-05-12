@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelationAcctWithoutAccount" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eccd7636-af95-4317-8392-8429992d4b2a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select sc.name scenario_name
+      ,co.name company_name
+      ,wf.workrelation_id
+      ,wf.name
+      ,wf.cost_type_id
+      ,wf.cost_center_id
+from   sle_planc_workforce wf
+       inner join sle_scenario sc on (sc.id = wf.scenario_id)
+       inner join planc_company co on (co.id = sc.company_id)
+where scenario_id = $P{scenarioID}
+and   (wf.cost_type_id,wf.cost_center_id) not in
+                                         (select cost_type_id,cost_center_id
+                                          from sle_cost_center_accts
+                                         )
+order by wf.workrelation_id]]>
+	</queryString>
+	<field name="SCENARIO_NAME" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="WORKRELATION_ID" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="COST_TYPE_ID" class="java.lang.String"/>
+	<field name="COST_CENTER_ID" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="131" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="bb58aaa8-3395-4f01-a9c4-ec237b83619e" x="0" y="110" width="572" height="20" forecolor="#CCCCCC" backcolor="#00CCFF"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineStyle="Dotted"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="4a163cdd-1339-4940-89eb-0cf238e4e535" x="37" y="110" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab3502ef-10b3-4d88-aed6-8a4966435e99" x="190" y="110" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CENTRO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="63929699-5519-43e5-863f-e99c5dd3230e" x="0" y="2" width="369" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RELACION DE CENTROS DE COSTOS SIN CUENTA CONTABLE ASIGNADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8ce0343-3635-4a69-8d1a-cbecb3ec45f9" x="369" y="110" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUMERO O FICHA]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy hh:mm:ss a">
+				<reportElement uuid="eea7512b-5326-4530-876c-f0bdefccffd2" mode="Opaque" x="0" y="64" width="190" height="20" forecolor="#333333"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8" isBold="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4c846247-69ac-4739-bdd0-58f692f41c87" x="0" y="85" width="115" height="20" forecolor="#333333"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="10" isBold="false" pdfFontName="Courier"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fa60bac9-447e-4235-901c-3a444b30eec0" x="0" y="43" width="572" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{SCENARIO_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0eb1d039-5ae5-4303-9dbb-f8c11f86ca4b" x="0" y="22" width="572" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8e02f844-083a-4772-8fa3-aae27360f11d" x="37" y="1" width="112" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COST_TYPE_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="98fb8835-c2d8-447e-8220-c5bec5768f43" x="190" y="1" width="159" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COST_CENTER_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="cf91a8af-8b32-47d5-8593-de242e4d40ab" x="369" y="1" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{WORKRELATION_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="InterfaceJDE" language="groovy" pageWidth="4320" pageHeight="614" orientation="Landscape" columnWidth="4280" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1d859825-372c-494a-9133-51ad9574614b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" fill="Solid" hAlign="Center"/>
+	<parameter name="companyID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["02"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="scenarioID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[11]]></defaultValueExpression>
+	</parameter>
+	<parameter name="workforceID" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="monedaID" class="java.lang.Integer"/>
+	<parameter name="accountID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="userID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["SLEPLANC"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+       CIA.id codcia
+      ,SCE.id codsce
+      ,cc.cost_center field1
+      ,to_char(SCE.start_slot,'YYYY') field2
+      ,cc.ledger_account field3
+      ,cc.name field4
+      ,cc.date_slot
+      ,DECODE(curr.ID,exch.TARGET_ID,(cc.amount/exch.rate),cc.amount)amount
+FROM  sle_currency  curr
+     ,sle_currency_exchange exch
+     ,sle_scenario sce
+     ,planc_company cia
+     ,sle_view_planc_accounting_dist cc
+where exch.source_id=sce.CURRENCY_ID
+and   exch.since = (SELECT MAX(A.since) FROM sle_currency_exchange A
+                    WHERE A.SOURCE_ID=SCE.currency_id
+                    AND A.target_id=exch.target_id
+                    AND SINCE<= cc.date_slot
+                   )
+and   cc.SCENARIO_ID=SCE.ID
+and   cc.COMPANY_ID=CIA.ID
+and   cc.scenario_id =  $P{scenarioID}
+and   cc.company_id = $P{companyID}
+and  (cc.account_id =  $P{accountID}   or  $P{accountID} IS null)
+and   curr.ID=$P{monedaID}
+and  (cc.workrelation_id = $P{workforceID} or $P{workforceID} is null)
+and   account_type = 0
+order by cc.company_id
+        ,cc.scenario_id
+        ,field1
+        ,field2
+        ,field3]]>
+	</queryString>
+	<field name="CODCIA" class="java.lang.String"/>
+	<field name="CODSCE" class="java.lang.Integer"/>
+	<field name="FIELD1" class="java.lang.String"/>
+	<field name="FIELD2" class="java.lang.String"/>
+	<field name="FIELD3" class="java.lang.String"/>
+	<field name="FIELD4" class="java.lang.String"/>
+	<field name="DATE_SLOT" class="java.sql.Timestamp"/>
+	<field name="AMOUNT" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="44">
+			<crosstab columnBreakOffset="30">
+				<reportElement uuid="b5002dd5-efe8-4d8f-84fa-b43e030a4eba" x="0" y="3" width="3618" height="39"/>
+				<rowGroup name="FIELD1" width="100">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{FIELD1}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<textField>
+								<reportElement uuid="ebec5698-2588-4a49-8c12-b1615ea9a351" style="Crosstab Data Text" x="0" y="0" width="100" height="25">
+									<printWhenExpression><![CDATA[new Boolean(true)]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{FIELD1}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="FIELD2" width="100">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{FIELD2}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<textField>
+								<reportElement uuid="ebec5698-2588-4a49-8c12-b1615ea9a352" style="Crosstab Data Text" isPrintRepeatedValues="false" x="0" y="0" width="100" height="25">
+									<printWhenExpression><![CDATA[new Boolean(true)]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{FIELD2}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="FIELD3" width="100">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{FIELD3}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<textField>
+								<reportElement uuid="ebec5698-2588-4a49-8c12-b1615ea9a353" style="Crosstab Data Text" x="0" y="0" width="100" height="25">
+									<printWhenExpression><![CDATA[new Boolean(true)]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{FIELD3}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="FIELD4" width="100">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{FIELD4}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<textField>
+								<reportElement uuid="ebec5698-2588-4a49-8c12-b1615ea9a354" style="Crosstab Data Text" x="0" y="0" width="100" height="25">
+									<printWhenExpression><![CDATA[new Boolean(true)]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{FIELD4}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="DATE_SLOT" height="0">
+					<bucket class="java.util.Date">
+						<bucketExpression><![CDATA[$F{DATE_SLOT}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque"/>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="AMOUNTMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{AMOUNT}]]></measureExpression>
+				</measure>
+				<crosstabCell width="66" height="25">
+					<cellContents>
+						<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+							<reportElement uuid="877ce03e-b460-422c-bd30-03abebe7f067" style="Crosstab Data Text" x="0" y="0" width="66" height="25"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="Courier New" pdfFontName="Courier" isPdfEmbedded="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

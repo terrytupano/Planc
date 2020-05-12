@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PCWorkforceCostCenters" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b9a1060-9321-4cfc-819c-73e244c28858">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<parameter name="accountID" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ac.id account_id
+,ac.name accountName
+,sc.name   scenario_name
+,co.name   company_name
+,cc.cost_type_id
+,cc.cost_center_id
+,cc.ledger_acct_dim1 accounting_cc
+,ac.ledger_acct_dim1 accounting_ac
+from sle_planc_account ac
+left outer join sle_cost_center_accts  cc on (ac.id = cc.account_id and cc.company_id in (select company_id
+                                                                                          from   sle_scenario
+                                                                                          where id = $P{scenarioID}
+                                                                                          ))
+inner join sle_scenario sc on (sc.id = $P{scenarioID})
+inner join planc_company co on co.id = sc.company_id
+where (ac.id = $P{accountID} or $P{accountID} is null)
+and    type_id=0
+order by ac.id,cc.cost_type_id,cc.cost_center_id]]>
+	</queryString>
+	<field name="ACCOUNT_ID" class="java.math.BigDecimal"/>
+	<field name="ACCOUNTNAME" class="java.lang.String"/>
+	<field name="SCENARIO_NAME" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="COST_TYPE_ID" class="java.lang.String"/>
+	<field name="COST_CENTER_ID" class="java.lang.String"/>
+	<field name="ACCOUNTING_CC" class="java.lang.String"/>
+	<field name="ACCOUNTING_AC" class="java.lang.String"/>
+	<group name="Account_id" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{ACCOUNT_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="22">
+				<textField evaluationTime="Group" evaluationGroup="Account_id">
+					<reportElement uuid="8b6ee8c3-c5dd-484a-992a-877db03154d8" x="5" y="1" width="88" height="16"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ACCOUNT_ID}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Account_id">
+					<reportElement uuid="2f58a64d-79af-4ebb-bbc8-f08a749f242f" x="100" y="1" width="280" height="16"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ACCOUNTNAME}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="5d5eabd5-e282-4a0e-9e2d-6f8101b6772e" x="403" y="1" width="113" height="16"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ACCOUNTING_AC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="74" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f29bf8da-f041-4b4d-a0d5-425d0594eb42" x="0" y="2" width="294" height="20"/>
+				<textElement>
+					<font size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[CUENTAS CONTABLES]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="429f819f-b27e-4caf-b9b8-9ee881814ef8" x="0" y="24" width="464" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f5ffe845-39e1-4e89-a42d-88535f946acb" x="0" y="45" width="463" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SCENARIO_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b627e437-e658-4aa7-a88e-b30e91dd7b9b" x="0" y="2" width="572" height="20" forecolor="#CCCCCC" backcolor="#00CCFF"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="ac52bd64-8377-47b7-972a-17f303bba095" x="24" y="5" width="100" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af12a5d6-ec06-4431-9e37-61d3ac2c89be" x="139" y="5" width="100" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CENTRO DE COSTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c809ae0f-85bd-4650-b4d9-d4c40e2890d7" x="406" y="5" width="113" height="16" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA CONTABLE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7da5ecd4-9479-48aa-9f40-4fef2540ebc3" x="24" y="2" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COST_TYPE_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="96ffab3c-f2c4-4507-bc2a-0767e11f657e" x="139" y="1" width="128" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{COST_CENTER_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="098bebb9-8acd-4326-913a-3bb8cfe2887f" x="405" y="2" width="114" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ACCOUNTING_CC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

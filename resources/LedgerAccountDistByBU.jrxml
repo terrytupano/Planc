@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LedgerAccountDistByBU" language="groovy" pageWidth="1300" pageHeight="1000" orientation="Landscape" columnWidth="1280" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a55c285a-246e-4bcf-b205-241c459212f3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<parameter name="accountID" class="java.lang.Integer"/>
+	<parameter name="companyID" class="java.lang.String"/>
+	<parameter name="costCenterID" class="java.lang.String"/>
+	<parameter name="workforceID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     ledger_account NAME
+    ,date_slot
+    ,account_id
+    ,amount
+    ,cost_center
+FROM  sle_view_planc_accounting_dist
+WHERE (scenario_id = $P{scenarioID} or $P{scenarioID} IS null)
+and account_type = 0
+and (account_id = $P{accountID} or $P{accountID} is null)
+and (company_id = $P{companyID} or $P{companyID} is null)
+and (cost_center = $P{costCenterID}     or $P{costCenterID} is null)
+and (workrelation_id = $P{workforceID} or $P{workforceID} is null)
+ORDER BY
+     cost_center,account_id,date_slot]]>
+	</queryString>
+	<field name="DATE_SLOT" class="java.util.Date"/>
+	<field name="ACCOUNT_ID" class="java.math.BigDecimal"/>
+	<field name="AMOUNT" class="java.math.BigDecimal"/>
+	<field name="COST_CENTER" class="java.lang.String"/>
+	<group name="CostCenter" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{COST_CENTER}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<textField>
+					<reportElement uuid="0e05ac8d-a0b4-4c8a-bb6c-ff1780d7f4ce" x="0" y="4" width="98" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{COST_CENTER}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="420">
+				<crosstab>
+					<reportElement uuid="4b81ca06-f475-47e4-b260-1b37c14d8de5" x="0" y="0" width="1260" height="420"/>
+					<crosstabDataset>
+						<dataset resetType="Group" resetGroup="CostCenter"/>
+					</crosstabDataset>
+					<rowGroup name="NAME" width="179" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{NAME}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#00FFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="341fa803-dde1-4990-9d07-79cbdbcffde6" style="Crosstab Data Text" x="0" y="0" width="179" height="25"/>
+									<textElement textAlignment="Left">
+										<font fontName="Courier New"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{NAME}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="f091d2dd-a44b-44f3-ac6e-2f3a2a056815" x="0" y="0" width="179" height="25"/>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font fontName="Courier New"/>
+									</textElement>
+									<text><![CDATA[TOTAL]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="DATE_SLOT" height="30" totalPosition="End">
+						<bucket class="java.util.Date">
+							<bucketExpression><![CDATA[$F{DATE_SLOT}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#00FFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField pattern="MMMM-yyyy">
+									<reportElement uuid="93e65b94-5f48-468b-a8ed-a1af9b126ed1" style="Crosstab Data Text" x="0" y="0" width="82" height="30"/>
+									<textElement>
+										<font fontName="Courier New"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{DATE_SLOT}]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents backcolor="#BFE1FF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="8fb6cbc6-d1d3-4797-910c-090bf7aca750" x="0" y="0" width="95" height="30"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Courier New"/>
+									</textElement>
+									<text><![CDATA[TOTAL]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="AMOUNTMeasure" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{AMOUNT}]]></measureExpression>
+					</measure>
+					<crosstabCell width="82" height="25">
+						<cellContents>
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="f87fcc9a-46f1-4148-be2b-07d4877e65ae" style="Crosstab Data Text" x="0" y="0" width="82" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="82" height="25" rowTotalGroup="NAME">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="f185ec41-fa68-4fdd-9598-1c6ec5923bed" style="Crosstab Data Text" x="0" y="0" width="82" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="95" columnTotalGroup="DATE_SLOT">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="e2e0313a-30d5-46e6-9ed2-e4597f6b8ebf" style="Crosstab Data Text" x="0" y="0" width="95" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="95" rowTotalGroup="NAME" columnTotalGroup="DATE_SLOT">
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="cc06f0b6-a394-44d6-b456-3cdc340b3318" style="Crosstab Data Text" x="0" y="0" width="95" height="25"/>
+								<textElement textAlignment="Right">
+									<font fontName="Courier New" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>

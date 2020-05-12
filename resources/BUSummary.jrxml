@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PCAccountPeriod" language="groovy" pageWidth="1300" pageHeight="612" orientation="Landscape" columnWidth="1260" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="80b9eb26-1d85-4f47-839f-bd85ab2ae6f1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<subDataset name="Table Dataset" uuid="9448c9c5-d788-4aa6-a98e-5bcb1e052500">
+		<parameter name="SCENARIOID" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="COMPANYID" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="BUSINESSID" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="WORKFORCEID" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="catValueID" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[SELECT bu_id||'-'||bu.name NAME
+      ,sle_tool.ts_todate(time_slot) date_slot
+      ,am.account_id
+      ,am.amount
+      ,to_char(bu.orderval) orderval
+FROM   SLE_PLANC_bu bu
+       inner join SLE_PLANC_AMOUNT am ON bu.ID = am.bu_id
+       inner join sle_planc_account ac on ac.id = am.account_id
+WHERE (am.scenario_id = $P{SCENARIOID})
+and (am.company_id = $P{COMPANYID})
+and (am.bu_id = $P{BUSINESSID}     or $P{BUSINESSID} is null)
+and (am.workrelation_id = $P{WORKFORCEID} or $P{WORKFORCEID} is null)
+and  ($P{catValueID} is null or am.workrelation_id in (select workrelation_id
+                                                       from   sle_model_cat_driver
+                                                       where  scenario_id = $P{SCENARIOID}
+                                                       and    company_id = $P{COMPANYID}
+                                                       and    cat_value_id = $P{catValueID}
+                                                      )
+      )
+and   ac.type_id=0
+ORDER BY
+     am.bu_id,bu.parent_id, bu.orderval]]>
+		</queryString>
+		<field name="NAME" class="java.lang.String"/>
+		<field name="DATE_SLOT" class="java.util.Date"/>
+		<field name="ACCOUNT_ID" class="java.lang.Integer"/>
+		<field name="AMOUNT" class="java.math.BigDecimal"/>
+		<field name="ORDERVAL" class="java.lang.String"/>
+		<sortField name="DATE_SLOT"/>
+		<sortField name="ACCOUNT_ID"/>
+		<sortField name="ORDERVAL"/>
+		<variable name="names" class="java.lang.String">
+			<variableExpression><![CDATA[$F{NAME}.split("/")]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="businessID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ALL"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="companyID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="scenarioID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="workforceID" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="userID" class="java.lang.String">
+		<defaultValueExpression><![CDATA["SLEPLANC"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="catValueID" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT
+       co.ID CODCIA
+      ,co.NAME NOMCIA
+      ,SCE.ID CODSENARIO
+      ,SCE.NAME NAME_ESC
+      ,SCE.CURRENCY_ID
+FROM  PLANC_COMPANY co
+     ,SLE_SCENARIO sce
+WHERE co.ID=SCE.COMPANY_ID
+AND  (SCE.ID = $P{scenarioID})
+AND  (co.ID = $P{companyID})
+ORDER BY
+      co.ID,SCE.ID]]>
+	</queryString>
+	<field name="CODCIA" class="java.lang.String"/>
+	<field name="NOMCIA" class="java.lang.String"/>
+	<field name="CODSENARIO" class="java.lang.Integer"/>
+	<field name="NAME_ESC" class="java.lang.String"/>
+	<field name="CURRENCY_ID" class="java.math.BigDecimal"/>
+	<group name="cia" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{CODCIA}]]></groupExpression>
+		<groupHeader>
+			<band height="139">
+				<staticText>
+					<reportElement uuid="864a6b5d-a183-4740-afbd-c325f6c69554" x="0" y="2" width="359" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="14" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[RESUMEN POR UNIDAD DE NEGOCIO]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="e59e5e76-94f9-4361-8970-38b1b816b3ce" x="2" y="23" width="357" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="12" isBold="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMCIA}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="2f9f0d0f-6753-41df-8baf-83a0aefa26e2" x="0" y="44" width="359" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="12" isBold="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NAME_ESC}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="a3ec786f-80bf-4e49-a7c6-b0eece72bc2a" mode="Opaque" x="3" y="64" width="115" height="20" forecolor="#333333"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="8" isBold="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{userID}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy h.mm a">
+					<reportElement uuid="c2a5b4a5-93cd-45de-bdb8-6f8ccd1625d4" mode="Opaque" x="2" y="84" width="116" height="20" forecolor="#333333"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="8" isBold="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="c49369da-5399-4428-88e3-5210522aae1c" x="3" y="104" width="115" height="20" forecolor="#333333"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Courier New" size="10" isBold="false" pdfFontName="Courier"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="180">
+			<crosstab>
+				<reportElement uuid="ebfb0684-a3d4-4b3c-bd9e-eaf68c5ac288" x="0" y="0" width="1260" height="180"/>
+				<crosstabDataset>
+					<dataset>
+						<datasetRun subDataset="Table Dataset" uuid="1f85eeef-e4bf-47ee-a761-1b8739e22205">
+							<datasetParameter name="SCENARIOID">
+								<datasetParameterExpression><![CDATA[$F{CODSENARIO}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="COMPANYID">
+								<datasetParameterExpression><![CDATA[$F{CODCIA}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="WORKFORCEID">
+								<datasetParameterExpression><![CDATA[$P{workforceID}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="BUSINESSID">
+								<datasetParameterExpression><![CDATA[$P{businessID}]]></datasetParameterExpression>
+							</datasetParameter>
+							<datasetParameter name="catValueID">
+								<datasetParameterExpression><![CDATA[$P{catValueID}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+					</dataset>
+				</crosstabDataset>
+				<crosstabHeaderCell>
+					<cellContents>
+						<staticText>
+							<reportElement uuid="ff4c6dc7-a692-44df-8e30-c535c09950c9" style="Crosstab Data Text" x="0" y="0" width="177" height="15"/>
+							<textElement textAlignment="Right">
+								<font fontName="Courier New" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+							</textElement>
+							<text><![CDATA[PERIODOS]]></text>
+						</staticText>
+						<staticText>
+							<reportElement uuid="e74f75bd-7bcc-40ff-bcaa-7c98fbd2cdd0" style="Crosstab Data Text" x="0" y="15" width="177" height="15"/>
+							<textElement textAlignment="Left">
+								<font fontName="Courier New" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+							</textElement>
+							<text><![CDATA[UNIDADES DE NEGOCIO]]></text>
+						</staticText>
+					</cellContents>
+				</crosstabHeaderCell>
+				<rowGroup name="NAME" width="179" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{NAME}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#00FFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="22fd3ffd-ea6b-4312-b7bc-cc5075699723" style="Crosstab Data Text" positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="0" y="0" width="179" height="25"/>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font fontName="Courier New" size="8" isUnderline="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{NAME}.substring($V{NAME}.indexOf("-")+1, $V{NAME}.length())]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="b042b700-0683-45d6-9a2b-845797fd2257" x="0" y="0" width="179" height="25"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Courier New" isBold="false" pdfFontName="Courier" isPdfEmbedded="true"/>
+								</textElement>
+								<text><![CDATA[TOTAL]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="DATE_SLOT" height="30" totalPosition="End">
+					<bucket class="java.util.Date">
+						<bucketExpression><![CDATA[$F{DATE_SLOT}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#00FFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="MMMM-yyyy">
+								<reportElement uuid="da2f7ba8-a21b-4754-aba8-cb92146df08b" style="Crosstab Data Text" x="0" y="0" width="82" height="30"/>
+								<textElement>
+									<font fontName="Courier New" pdfFontName="Courier" isPdfEmbedded="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{DATE_SLOT}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="7e917371-d22e-4e7a-aef7-c003667d17eb" x="0" y="0" width="95" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Courier New" pdfFontName="Courier" isPdfEmbedded="true"/>
+								</textElement>
+								<text><![CDATA[TOTAL]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="AMOUNTMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{AMOUNT}]]></measureExpression>
+				</measure>
+				<crosstabCell width="82" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00;-#,##0.00">
+							<reportElement uuid="908cb868-c5f1-4e57-acec-65ebab1dc455" style="Crosstab Data Text" x="0" y="0" width="82" height="25"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="Courier New" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="82" height="25" rowTotalGroup="NAME">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00;-#,##0.00">
+							<reportElement uuid="67a7ce2e-3286-467d-b3a0-caddd5ff46b3" style="Crosstab Data Text" x="0" y="0" width="82" height="25"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="Courier New" size="8" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="95" height="25" columnTotalGroup="DATE_SLOT">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00;-#,##0.00">
+							<reportElement uuid="f0ee838b-fbc2-4915-94f2-c9c01e78c596" style="Crosstab Data Text" x="0" y="0" width="95" height="25"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="Courier New" size="8" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="95" height="25" rowTotalGroup="NAME" columnTotalGroup="DATE_SLOT">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00;-#,##0.00">
+							<reportElement uuid="78cf24d5-4c42-46f0-bbb9-b66777052a80" style="Crosstab Data Text" x="0" y="0" width="95" height="25"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="Courier New" size="8" isBold="true" pdfFontName="Courier" isPdfEmbedded="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{AMOUNTMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</detail>
+</jasperReport>

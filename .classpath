@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jgoodies/animation-1.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/forms-1.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies/looks-1.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jdic.jar"/>
+	<classpathentry kind="lib" path="lib/Swing/JavaCalendar-1.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/persistence/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/persistence/mysql-connector-java-3.1.7-bin.jar"/>
+	<classpathentry kind="lib" path="lib/expression_evaluator/mvel2-2.2.0.Final.jar"/>
+	<classpathentry kind="lib" path="lib/expression_evaluator/jep-2.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/Swing/idw-gpl_.jar" sourcepath="C:/Users/terry/Documents/java/docking framework/infonode/idw-gpl-1.6.1/src"/>
+	<classpathentry kind="lib" path="lib/expression_evaluator/autocomplete-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/expression_evaluator/rsyntaxtextarea-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/expression_evaluator/language_support.jar"/>
+	<classpathentry kind="lib" path="lib/Swing/jfreechart-1.0.19.jar" sourcepath="C:/Users/terry/Documents/java/jfree/jfreechart-1.0.19/source"/>
+	<classpathentry kind="lib" path="lib/Swing/timingframework-swing-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/Swing/weblaf-complete-1.28.jar" sourcepath="C:/Users/terry/Documents/java/Look and feel/Web Look and Feel/weblaf-src-1.28.jar"/>
+	<classpathentry kind="lib" path="lib/persistence/commons-csv-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/persistence/csvjdbc-1.0-31.jar"/>
+	<classpathentry kind="lib" path="lib/persistence/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-6.3.1.jar" sourcepath="C:/Users/terry/Documents/java/jasper soft &amp; related/jasperreport-6.3.1/jasperreports-6.3.1/src"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-chart-customizers-6.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-chart-themes-6.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-fonts-6.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-functions-6.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports-javaflow-6.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/Swing/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/commons-collections-3.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/groovy-all-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/itext-2.1.7.js5.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/spring.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/joda-time-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/curvesapi-1.04.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/poi-excelant-3.16.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/poi-ooxml-3.16.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/poi-ooxml-schemas-3.16.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/poi-scratchpad-3.16.jar"/>
+	<classpathentry kind="lib" path="lib/apache_poi/poi-3.16.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/poi-3.10.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-email-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

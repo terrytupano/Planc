@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WorkforceTotal" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="963697ee-2572-4501-b359-256b274c8e2c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="scenarioID" class="java.lang.Integer"/>
+	<parameter name="businessID" class="java.lang.String"/>
+	<parameter name="accountID" class="java.lang.Integer"/>
+	<parameter name="workforceID" class="java.lang.String"/>
+	<parameter name="userID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select    wf.workrelation_id
+         ,wf.name	name_workforce
+         ,am.amount
+         ,co.name	name_company
+         ,sc.name	name_scenario
+         ,ac.name    name_account
+         ,am.account_id
+from  sle_planc_workforce wf
+      inner join sle_planc_amount am on wf.scenario_id = am.scenario_id and wf.workrelation_id = am.workrelation_id
+      inner join sle_planc_account ac on am.account_id = ac.id
+      inner join sle_scenario sc on am.scenario_id = sc.id
+      inner join planc_company co on sc.company_id = co.id
+where am.scenario_id = $P{scenarioID}
+and   (am.account_id = $P{accountID} or $P{accountID} is null)
+and   (am.bu_id = $P{businessID} or $P{businessID} is null)
+and   (am.workrelation_id = $P{workforceID} or $P{workforceID} is null)
+and   ac.type_id = 0
+order by am.workrelation_id]]>
+	</queryString>
+	<field name="WORKRELATION_ID" class="java.lang.String"/>
+	<field name="NAME_WORKFORCE" class="java.lang.String"/>
+	<field name="AMOUNT" class="java.math.BigDecimal"/>
+	<field name="NAME_COMPANY" class="java.lang.String"/>
+	<field name="NAME_SCENARIO" class="java.lang.String"/>
+	<field name="NAME_ACCOUNT" class="java.lang.String"/>
+	<field name="ACCOUNT_ID" class="java.math.BigDecimal"/>
+	<variable name="AMOUNT_1" class="java.math.BigDecimal" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_2" class="java.math.BigDecimal" resetType="Group" resetGroup="workforce" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="totalAccount" class="java.lang.Integer" resetType="Group" resetGroup="workforce" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_3" class="java.math.BigDecimal" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_4" class="java.math.BigDecimal" resetType="Group" resetGroup="workforce" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_5" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="WORKRELATION_ID_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{WORKRELATION_ID}]]></variableExpression>
+	</variable>
+	<variable name="ACCOUNT_ID_1" class="java.lang.Integer" resetType="Group" resetGroup="workforce" calculation="Count">
+		<variableExpression><![CDATA[$F{ACCOUNT_ID}]]></variableExpression>
+	</variable>
+	<group name="account" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[]]></groupExpression>
+	</group>
+	<group name="workforce">
+		<groupExpression><![CDATA[$F{NAME_WORKFORCE}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement uuid="63703892-a708-43df-9600-64aa25ff3d97" x="112" y="0" width="248" height="20"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NAME_WORKFORCE}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="workforce" pattern="#,##0.00;-#,##0.00">
+					<reportElement uuid="c789dbd0-91e3-4604-a5a7-8faf8b4d85fe" x="405" y="0" width="100" height="20"/>
+					<textElement textAlignment="Right">
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{AMOUNT_2}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="898f1574-fc5c-4978-81bb-ff3e5e66d0e6" x="24" y="0" width="63" height="20"/>
+					<textElement>
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{WORKRELATION_ID}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="account">
+					<reportElement uuid="9ee4b164-c342-489a-a2d4-12e622a18c3c" x="368" y="0" width="37" height="20">
+						<printWhenExpression><![CDATA[$P{accountID} != null]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font fontName="Courier New" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ACCOUNT_ID_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="172" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="125942de-9c99-42c1-912f-d698d4c912be" x="0" y="131" width="525" height="30" backcolor="#00CCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="0efba23d-30df-4927-ba53-343068370a64" x="112" y="137" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE COLABORAOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1d520aff-c704-4231-a75a-24d7c6811c8d" x="410" y="137" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b639515b-7cce-424f-94e0-093277c2513c" x="0" y="21" width="429" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_COMPANY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5759e77e-6f96-4406-bc55-3332998c4906" x="0" y="41" width="429" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_SCENARIO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3ac9d16c-9a59-4632-85ee-2dc56619f65d" x="24" y="137" width="82" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO. COLABORADOR]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement uuid="ec1f17d5-8609-4d5f-baee-1feaf36bd442" x="0" y="84" width="102" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="843ff41d-f7f0-4ab9-b817-a56b23d3c23c" x="0" y="106" width="102" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7236cbb2-385d-4fa9-8b07-d3f673ac80eb" x="0" y="62" width="102" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{userID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ecb8439e-02cd-4e9b-95df-0cba81fda761" x="0" y="1" width="429" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ESCENARIO POR COLABORADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3fd7d600-9ecb-414e-96b2-0266e30cda30" x="131" y="106" width="47" height="20">
+					<printWhenExpression><![CDATA[$P{accountID} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA: ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e63439ce-44e2-41c4-a014-95e0db15f0e5" x="194" y="106" width="69" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{accountID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="537509a9-a3ae-4cf4-b37d-3e323e566c07" x="268" y="106" width="219" height="20">
+					<printWhenExpression><![CDATA[$P{accountID} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_ACCOUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3fd7d600-9ecb-414e-96b2-0266e30cda30" x="362" y="141" width="47" height="20">
+					<printWhenExpression><![CDATA[$P{accountID} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="23">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement uuid="4bf9f925-bccc-4ec2-95f5-15671e6abd1c" x="386" y="0" width="119" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{AMOUNT_5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc992494-e818-402a-bc0f-6d1dce966506" x="316" y="0" width="52" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5a854bfc-09ee-4f5c-b9e3-b0d62f83011d" x="243" y="0" width="39" height="20"/>
+				<textElement>
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{WORKRELATION_ID_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc992494-e818-402a-bc0f-6d1dce966506" x="158" y="0" width="73" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Courier New" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COLABORADORES]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
